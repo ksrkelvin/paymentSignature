@@ -6,16 +6,16 @@ import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
+
 @Entity
+@Table(name = "payment_preference")
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "payment_preference")
-public class PaymentPreferenceEntity {
+public class PreferenceEntity {
 
     @Id
-    @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     private String title;
@@ -26,8 +26,10 @@ public class PaymentPreferenceEntity {
     @JoinColumn(name = "app_id")
     private PaymentAppEntity app;
 
-    @OneToMany(mappedBy = "paymentPreference")
-    private List<PaymentCredentialEntity> paymentCredentials;  // Relacionamento unidirecional, uma PaymentPreference tem várias PaymentCredential
+    @ManyToOne
+    @JoinColumn(name = "credential_id")
+    private GatewayCredentialEntity credential;
+
 
     private LocalDateTime created;
     private LocalDateTime updated;

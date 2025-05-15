@@ -5,35 +5,33 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.List;
 
 @Entity
+@Table(name = "payment_app")
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "payment_app")
 public class PaymentAppEntity {
 
     @Id
-    @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
-    @NotNull
-    private String title;
-
-    @NotNull
-    private String description;
-
-    @NotNull
-    private String urlApp;
+    @NotNull private String title;
+    @NotNull private String description;
+    @NotNull private String urlApp;
 
     @Enumerated(EnumType.STRING)
     private EnvironmentType env;
 
+    private Boolean active = true;
+
+    @OneToMany(mappedBy = "app", fetch = FetchType.LAZY)
+    private List<GatewayCredentialEntity> paymentCredentials;
+
     private LocalDateTime created;
     private LocalDateTime updated;
-
-    public PaymentAppEntity() {}
 
     @PrePersist
     protected void onCreated() {

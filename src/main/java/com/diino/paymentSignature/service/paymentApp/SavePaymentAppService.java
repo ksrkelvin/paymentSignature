@@ -2,11 +2,10 @@ package com.diino.paymentSignature.service.paymentApp;
 
 import com.diino.paymentSignature.dto.PaymentAppDTO;
 import com.diino.paymentSignature.entity.PaymentAppEntity;
+import com.diino.paymentSignature.mapper.AppMapper;
 import com.diino.paymentSignature.repository.PaymentAppRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 public class SavePaymentAppService {
@@ -21,22 +20,21 @@ public class SavePaymentAppService {
         PaymentAppEntity paymentApp;
 
         if (id == null) {
-            paymentApp = new PaymentAppEntity();
+            paymentApp = AppMapper.toEntity(dto);
         } else {
             paymentApp = repository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException("Aplicativo de pagamento não encontrado com ID: " + id));
+
+            //Update the existing entity
+            paymentApp.setTitle(dto.getTitle());
+            paymentApp.setDescription(dto.getDescription());
+            paymentApp.setUrlApp(dto.getUrlApp());
+            paymentApp.setEnv(dto.getEnv());
+
         }
-
-        paymentApp.setTitle(dto.getTitle());
-        paymentApp.setDescription(dto.getDescription());
-        paymentApp.setUrlApp(dto.getUrlApp());
-        paymentApp.setEnv(dto.getEnv());
-        paymentApp.setCreated(dto.getCreated());
-        paymentApp.setUpdated(dto.getUpdated());
-
         repository.save(paymentApp);
 
-        return new PaymentAppDTO(paymentApp);
+        return AppMapper.toDTO(paymentApp);
 
     }
 

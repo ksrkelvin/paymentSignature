@@ -1,6 +1,7 @@
 package com.diino.paymentSignature.service.paymentApp;
 
 import com.diino.paymentSignature.dto.PaymentAppDTO;
+import com.diino.paymentSignature.mapper.AppMapper;
 import com.diino.paymentSignature.repository.PaymentAppRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,8 @@ public class ListPaymentAppService {
     }
 
     public List<PaymentAppDTO> execute(){
-        return repository.findAll().stream().map(PaymentAppDTO::new).collect(Collectors.toList());
+        return repository.findAll().stream()
+                .map(AppMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

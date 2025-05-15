@@ -5,34 +5,35 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+
 @Entity
+@Table(name = "payment_gateway_credential")
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "payment_credential")
-public class PaymentCredentialEntity {
+public class GatewayCredentialEntity {
 
     @Id
-    @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "app_id")
     private PaymentAppEntity app;
 
     @Enumerated(EnumType.STRING)
     private PaymentProvider paymentProvider;
 
-    @NotNull
-    private String publicKey;
+    @NotNull private String publicKey;
+    @NotNull private String accessToken;
 
-    @NotNull
-    private String accessToken;
+    private Boolean active = true;
 
-    @ManyToOne
-    @JoinColumn(name = "payment_preference_id")
-    private PaymentPreferenceEntity paymentPreference;
+    @OneToMany(mappedBy = "credential", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PreferenceEntity> preferences;
 
     private LocalDateTime created;
     private LocalDateTime updated;

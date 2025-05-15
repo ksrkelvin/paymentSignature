@@ -9,6 +9,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class PaymentAppDTO {
@@ -30,6 +32,8 @@ public class PaymentAppDTO {
     private LocalDateTime created;
     @JsonProperty("updated")
     private LocalDateTime updated;
+    @JsonProperty("gatewayCredentials")
+    private List<GatewayCredentialDTO> gatewayCredentials; // Placeholder for the actual type
 
     public PaymentAppDTO() {}
 
@@ -41,5 +45,13 @@ public class PaymentAppDTO {
         this.env = entity.getEnv();
         this.created = entity.getCreated();
         this.updated = entity.getUpdated();
+
+        if (entity.getPaymentCredentials() != null) {
+            this.gatewayCredentials = entity.getPaymentCredentials()
+                    .stream()
+                    .map(GatewayCredentialDTO::new)
+                    .collect(Collectors.toList());
+        }
     }
+
 }
